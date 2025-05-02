@@ -67,8 +67,8 @@ volumes:
 ```
 
 > Ajuste as senhas e portas conforme sua necessidade.
-> OBS. Se alterar a url ou/e porta do server PHP alterar a seguinte linha no arquivo
-> app\Views\wallet.php
+> OBS. Se alterar a url ou/e porta do server PHP alterar o seguinte paramentro *URL_BASE*  nos arquivos
+> app\Views\ > wallet.php , register.php e login.php
 ```
 # Sua url configurada no env
 const URL_BASE = 'http://localhost:8080';
