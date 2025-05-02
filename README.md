@@ -98,6 +98,7 @@ jwt.ttl    = 3600
 ---
 
 ## 🗄️ Banco de Dados
+> Migrate : php spark migrate
 
 ### Tabelas principais
 
@@ -205,7 +206,7 @@ app/
 # Levanta os containers
 docker-compose up -d --build
 
-# Dentro do container app (se precisar executar comandos manualmente):
+# Dentro do container app (Instalar dependencias coposer e rodar migrate):
 docker exec -it codeigniter_app bash
 
 # Dentro dele:
