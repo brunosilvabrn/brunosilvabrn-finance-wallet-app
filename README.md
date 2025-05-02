@@ -77,7 +77,7 @@ const URL_BASE = 'http://localhost:8080';
 ---
 
 ## 📝 Variáveis de ambiente
-Renomear o arquivo env.example para .env
+Renomear o arquivo **env.example** para .env
 No arquivo `.env` na raiz do projeto, configure:
 
 ```ini
