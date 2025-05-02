@@ -74,7 +74,7 @@
     </div>
 
     <script>
-        const URL_BASE = 'http://localhost:8080';
+        const URL_BASE = 'http://192.168.1.10:8080';
         // Dados do usuário (serão preenchidos pela API)
         let user = {
             name: "",

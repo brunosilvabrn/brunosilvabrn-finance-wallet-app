@@ -78,6 +78,8 @@
     </div>
 
     <script>
+        const URL_BASE = 'http://192.168.1.10:8080';
+
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -135,7 +137,7 @@
                 `;
                 
                 // Faz a requisição para a API
-                const response = await fetch('http://localhost:8080/auth/register', {
+                const response = await fetch(URL_BASE + '/auth/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -157,7 +159,7 @@
                 document.getElementById('successMessage').textContent = 'Cadastro realizado com sucesso!';
                 console.log('Resposta da API:', data);
 
-                const responseLogin = await fetch('http://localhost:8080/auth/login', {
+                const responseLogin = await fetch(URL_BASE + '/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

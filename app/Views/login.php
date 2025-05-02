@@ -62,6 +62,8 @@
     </div>
 
     <script>
+
+        const URL_BASE = 'http://192.168.1.10:8080';
         
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -105,7 +107,7 @@
                     Processando...
                 `;
                 
-                const response = await fetch('http://localhost:8080/auth/login', {
+                const response = await fetch(URL_BASE + '/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
