@@ -234,7 +234,7 @@
             const token = localStorage.getItem('jwt_token');
             if (!token) throw new Error('Usuário não autenticado');
 
-            const res = await fetch(BASE_URL + `/${path}`, {
+            const res = await fetch(URL_BASE + `/${path}`, {
             ...options,
             headers: {
                 ...(options.headers || {}),
@@ -248,15 +248,10 @@
 
             return res.json();
         }
-
-        // -------------------------------
-        // 2) Função para formatar moeda (se já não existir)
-        // -------------------------------
         function formatCurrency(value) {
             return value.toFixed(2).replace('.', ',');
         }
 
-        // Processar depósito
         async function handleDeposit() {
             const amountInput = document.getElementById('depositAmount');
             const amount = parseFloat(amountInput.value);
@@ -267,7 +262,6 @@
             }
 
             try {
-                // 1) Chama a API de depósito
                 
                 const res = await apiFetch('/wallet/deposit', {
                     method: 'POST',
@@ -275,28 +269,23 @@
                     body: JSON.stringify({ amount })
                 });
 
-                // 2) Atualiza o balance do usuário com o valor retornado pela API
-                //    Supondo que a API retorne { transaction: { … }, balance: novoSaldo }
                 const { transaction, balance } = res;
                 user.balance = balance;
 
-                // 3) Adiciona a nova transação no início da lista
                 const newTransaction = {
                 id:          transaction.id,
                 type:        transaction.type,
                 amount:      transaction.amount,
-                date:        transaction.created_at.split(' ')[0], // 'YYYY-MM-DD HH:MM:SS'
+                date:        transaction.created_at.split(' ')[0], 
                 description: 'Depósito na carteira',
                 reversed:    transaction.status !== 'completed'
                 };
                 user.transactions.unshift(newTransaction);
 
-                // 4) Atualiza a UI
                 updateUI();
                 renderTransactionHistory();
                 closeModal();
 
-                // 5) Feedback pro usuário
                 alert(`Depósito de ${formatCurrency(amount)} realizado com sucesso!`);
 
             } catch (error) {
@@ -321,15 +310,12 @@
             return;
         }
 
-        // Validar saldo local (opcional)
         if (user.balance < amount) {
             alert('Saldo insuficiente para realizar esta transferência.');
             return;
         }
 
         try {
-            // 1) Chama a API de transferência
-            //    endpoint POST /wallet/transfer { to_user_id, amount }
             const res = await apiFetch('wallet/transfer', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -344,13 +330,10 @@
                 return;
             }
 
-            // 2) Extrai dados da resposta
             const { transaction, balance } = res;
 
-            // 3) Atualiza o saldo conforme o servidor
             user.balance = balance;
 
-            // 4) Monta a nova transação usando os dados retornados
             const newTransaction = {
             id:          transaction.id,
             type:        'send',
@@ -361,12 +344,10 @@
             };
             user.transactions.unshift(newTransaction);
 
-            // 5) Atualiza a interface
             updateUI();
             renderTransactionHistory();
             closeModal();
 
-            // 6) Confirmação para o usuário
             alert(`Transferência de ${formatCurrency(amount)} para ${recipient} realizada com sucesso!`);
 
         } catch (error) {
@@ -385,25 +366,18 @@
             if (!originalTx || originalTx.reversed) return;
 
             try {
-                // 1) Chama a API de reversão
-                // Supondo rota POST /wallet/reverse/{id} que retorna { reversal: {...}, balance: novoSaldo }
                 const res = await apiFetch(`wallet/reverse/${transactionId}`, {
                 method: 'POST'
                 });
 
                 const { transaction, balance } = res;
-
-                // 2) Marca a transação original como revertida localmente
                 originalTx.reversed = true;
-
-                // 3) Atualiza o saldo com o valor retornado pelo servidor
                 user.balance = balance;
 
-                // 4) Adiciona a transação de reversão vinda do servidor
                 const newTransaction = {
                 id:          transaction.id,
-                type:        transaction.type,            // deve ser 'transfer' ou 'deposit'
-                amount:      (transaction.user_id_from)   // sinal já vem correto do servidor
+                type:        transaction.type,           
+                amount:      (transaction.user_id_from) 
                                 ? -transaction.amount 
                                 : transaction.amount,
                 date:        transaction.created_at.split(' ')[0],
@@ -412,7 +386,6 @@
                 };
                 user.transactions.unshift(newTransaction);
 
-                // 5) Atualiza a UI
                 updateUI();
                 renderTransactionHistory();
 
@@ -424,7 +397,6 @@
             }
         }
 
-        // Funções auxiliares
         function formatCurrency(value) {
             return 'R$ ' + value.toFixed(2).replace('.', ',').replace(/(\d)(?=(\d{3})+\,)/g, '$1.');
         }
@@ -435,7 +407,7 @@
         }
 
         async function handleLogout() {
-            // await fetch('/auth/logout', { method: 'POST', credentials: 'include' });
+
             await apiFetch('auth/logout', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
